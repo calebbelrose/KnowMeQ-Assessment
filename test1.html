@@ -1,35 +1,44 @@
 <html>
+	<head>
+		<link rel="stylesheet" href="styles.css">
+	</head>
 	<body>
 		<div id="app">
-		  <h1>{{ quiz.title }}</h1>
+		  <span id="testbar">
+				<h1>{{ quiz.title }}</h1> <!-- The two navigation buttons -->
+				<!-- Note: prev is hidden on first question -->
+				<button v-if="questionIndex > 0" v-on:click="prev">
+					prev
+				</button>
+				<button v-on:click="next">
+					next
+				</button>
+			</span>
 		  <!-- index is used to check with current question index -->
-		  <div v-for="(question, index) in quiz.questions">
+		  <div id="question" v-for="(question, index) in quiz.questions">
 			<!-- Hide all questions, show only the one with index === to current question index -->
-			<div v-show="index === questionIndex">
-			  <h2>{{ question.text }}</h2>
-			  <ol>
+			<div class = "row" v-show="index === questionIndex">
+				<div class="column">
+					<h2>{{ question.text }}</h2>
+					<blockquote>{{ question.quote }}</blockquote>
+				</div>
 				<!-- for each response of the current question -->
-				<li v-for="response in question.responses">
-				  <label>
-					<!-- The radio button has three new directives -->
-					<!-- v-bind:value sets "value" to "true" if the response is correct -->
-					<!-- v-bind:name sets "name" to question index to group answers by question -->
-					<!-- v-model creates binding with userResponses -->
-					<input type="radio" 
-						   v-bind:value="response.correct" 
-						   v-bind:name="index" 
-						   v-model="userResponses[index]"> {{response.text}}
-				  </label>
-				</li>
-			  </ol>
-			  <!-- The two navigation buttons -->
-			  <!-- Note: prev is hidden on first question -->
-			  <button v-if="questionIndex > 0" v-on:click="prev">
-				prev
-			  </button>
-			  <button v-on:click="next">
-				next
-			  </button>
+				<div class="column">
+					<li v-for="response in question.responses">
+					  <label>
+						<!-- The radio button has three new directives -->
+						<!-- v-bind:value sets "value" to "true" if the response is correct -->
+						<!-- v-bind:name sets "name" to question index to group answers by question -->
+						<!-- v-model creates binding with userResponses -->
+						<input type="radio" 
+							   v-bind:value="response.correct" 
+							   v-bind:name="index" 
+							   v-model="userResponses[index]">
+							   <div class="radiotext">{{response.text}}</div>
+							   <span class="checkmark"></span>
+					  </label>
+					</li>
+				</div>
 			</div>
 		  </div>
 		  <!-- Last page, quiz is finished, display result -->
@@ -56,6 +65,7 @@
         questions: [
           {
             text: "Question 1",
+			quote: "testing",
             responses: [
               {text: 'Wrong, too bad.'}, 
               {text: 'Right!', correct: true}, 

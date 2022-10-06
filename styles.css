@@ -1,0 +1,122 @@
+body
+{
+	background-color:#eee;
+}
+
+#app
+{
+	width:90%;
+	margin: auto;
+}
+
+.row
+{
+	display:flex;
+}
+
+.column
+{
+	flex: 50%;
+	margin:50px;
+}
+
+#testbar
+{
+	background-color:fff;
+	display:block;
+	margin-bottom:25px;
+	margin-top:0px;
+}
+
+#question
+{
+	background-color:fff;
+}
+
+li
+{
+	list-style: none;
+	margin:40px;
+}
+
+h1
+{
+	display:inline;
+}
+button
+{
+	float:right;
+}
+
+/* Customize the label (the container) */
+label {
+	display: block;
+	position: relative;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border-radius: 10px;
+	padding: 20px 20px 20px 75px;
+}
+
+/* Hide the browser's default radio button */
+label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #fff;
+  border-radius: 50%;
+  margin:20px;
+  border: 1px solid #eee;
+}
+
+/* On mouse-over, add a light green background color */
+label:hover input ~ .checkmark {
+  background-color: #CEE8DD;
+}
+
+label:hover {
+  background-color: #9dd0bb;
+}
+
+/* When the radio button is checked, add a green background */
+label input:checked ~ .checkmark {
+  background-color: #9dd0bb;
+  border: 1px solid #eee;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+label .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
