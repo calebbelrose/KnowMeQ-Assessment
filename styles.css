@@ -1,12 +1,69 @@
 body
 {
 	background-color:#eee;
+	font-family:Arial;
+	width:100%;
+	margin:auto;
 }
 
-#app
+blockquote
 {
-	width:90%;
-	margin: auto;
+	font-style:italic;
+	padding:10px 25px;
+	margin:0px;
+	border-left:5px solid #ddd;
+	line-height:1.4;
+}
+
+button
+{
+	background-color: #9dd0bb;
+	color: #fff;
+	padding:15px 35px;
+	border:none;
+	border-radius:5px;
+}
+
+button:hover
+{
+	background-color: #CEE8DD;
+}
+
+.arrow {
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-left:5px;
+}
+
+.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-right:5px;
+}
+
+#buttonholder
+{
+	margin: auto 0 auto auto;
+}
+
+button:hover
+{
+	cursor: pointer;
+}
+
+blockquote cite {
+	display: block;
+}
+
+blockquote cite:before {
+	content: "\2014 \2009";
 }
 
 .row
@@ -20,50 +77,53 @@ body
 	margin:50px;
 }
 
-#testbar
+#barholder
 {
 	background-color:fff;
-	display:block;
-	margin-bottom:25px;
 	margin-top:0px;
+	margin-bottom: 25px;
 }
 
-#question
+#testbar
 {
+	display:flex;
+}
+.content
+{
+	width:90%;
+	margin:auto;
 	background-color:fff;
+	border-radius: 5px;
 }
 
 li
 {
 	list-style: none;
-	margin:40px;
-}
-
-h1
-{
-	display:inline;
-}
-button
-{
-	float:right;
+	margin:40px 0px;
 }
 
 /* Customize the label (the container) */
-label {
+.radiotext {
 	display: block;
-	position: relative;
 	cursor: pointer;
 	font-size: 22px;
+	border-radius: 10px;
+	border: 2px solid #eee;
+	padding: 20px 20px 20px 75px;
+	appearance: button; -webkit-appearance: button; -moz-appearance: button; -ms-appearance: button;
+}
+
+li
+{
+	position: relative;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	border-radius: 10px;
-	padding: 20px 20px 20px 75px;
 }
 
 /* Hide the browser's default radio button */
-label input {
+input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -84,19 +144,18 @@ label input {
   border: 1px solid #eee;
 }
 
-/* On mouse-over, add a light green background color */
-label:hover input ~ .checkmark {
+.radiotext:hover {
   background-color: #CEE8DD;
 }
 
-label:hover {
-  background-color: #9dd0bb;
-}
-
 /* When the radio button is checked, add a green background */
-label input:checked ~ .checkmark {
+input:checked ~ .checkmark {
   background-color: #9dd0bb;
   border: 1px solid #eee;
+}
+
+input:checked ~ .radiotext {
+  background-color: #9dd0bb;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -104,19 +163,15 @@ label input:checked ~ .checkmark {
   content: "";
   position: absolute;
   display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-label input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the indicator (dot/circle) */
-label .checkmark:after {
   top: 9px;
   left: 9px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: white;
+}
+
+/* Show the indicator (dot/circle) when checked */
+input:checked ~ .checkmark:after {
+  display: block;
 }

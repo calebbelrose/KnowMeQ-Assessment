@@ -4,51 +4,55 @@
 	</head>
 	<body>
 		<div id="app">
-		  <span id="testbar">
-				<h1>{{ quiz.title }}</h1> <!-- The two navigation buttons -->
-				<!-- Note: prev is hidden on first question -->
-				<button v-if="questionIndex > 0" v-on:click="prev">
-					prev
-				</button>
-				<button v-on:click="next">
-					next
-				</button>
-			</span>
-		  <!-- index is used to check with current question index -->
-		  <div id="question" v-for="(question, index) in quiz.questions">
-			<!-- Hide all questions, show only the one with index === to current question index -->
-			<div class = "row" v-show="index === questionIndex">
-				<div class="column">
-					<h2>{{ question.text }}</h2>
-					<blockquote>{{ question.quote }}</blockquote>
-				</div>
-				<!-- for each response of the current question -->
-				<div class="column">
-					<li v-for="response in question.responses">
-					  <label>
-						<!-- The radio button has three new directives -->
-						<!-- v-bind:value sets "value" to "true" if the response is correct -->
-						<!-- v-bind:name sets "name" to question index to group answers by question -->
-						<!-- v-model creates binding with userResponses -->
-						<input type="radio" 
-							   v-bind:value="response.correct" 
-							   v-bind:name="index" 
-							   v-model="userResponses[index]">
-							   <div class="radiotext">{{response.text}}</div>
-							   <span class="checkmark"></span>
-					  </label>
-					</li>
+			<div id="barholder">
+			  <div class="content" id="testbar">
+					<h1>{{ quiz.title }}</h1>
+					<div id="buttonholder">
+						<!-- Prev is hidden on first question -->
+						<button v-show="questionIndex > 0" v-on:click="prev">
+							<i class="arrow left"></i>Prev 
+						</button>
+						<button v-show="userResponses[questionIndex] != null" v-on:click="next">
+							Next<i class="arrow right"></i>
+						</button>
+					</div>
 				</div>
 			</div>
-		  </div>
-		  <!-- Last page, quiz is finished, display result -->
-		  <div v-show="questionIndex === quiz.questions.length">
-			<h2>
-			Quiz finished
-		  </h2>
-			<p>
-			  Total score: {{ score() }} / {{ quiz.questions.length }}
-			</p>
+			<div class="content">
+			  <!-- index is used to check with current question index -->
+			  <div v-for="(question, index) in quiz.questions">
+				<!-- Hide all questions, show only the one with index === to current question index -->
+				<div class = "row" v-show="index === questionIndex">
+					<div class="column">
+						<h2>{{ question.text }}</h2>
+						<blockquote>{{ question.quote }}</blockquote>
+					</div>
+					<!-- for each response of the current question -->
+					<div class="column">
+					<h4>SELECT ONLY ONE</h4>
+						<li v-for="(response, optionindex) in question.responses">
+						  <label>
+							<!-- The radio button has three new directives -->
+							<!-- v-bind:value sets "value" to "true" if the response is correct -->
+							<!-- v-bind:name sets "name" to question index to group answers by question -->
+							<!-- v-model creates binding with userResponses -->
+							<input type="radio" v-bind:value="optionindex" v-bind:name="index" v-model="userResponses[index]">
+								   <div class="radiotext">{{response.text}}</div>
+								   <span class="checkmark"></span>
+						  </label>
+						</li>
+					</div>
+				</div>
+			  </div>
+			  <!-- Last page, quiz is finished, display result -->
+			  <div class="column" v-show="questionIndex === quiz.questions.length">
+				<h2>
+				Quiz finished
+			  </h2>
+				<p>
+				  Total score: {{ score() }} / {{ quiz.questions.length }}
+				</p>
+			  </div>
 		  </div>
 		</div>
 	  <!-- Load Vue script -->
@@ -64,17 +68,24 @@
         title: 'My quiz',
         questions: [
           {
-            text: "Question 1",
-			quote: "testing",
+            text: "What is the main point of the message below?",
+			quote: "\"Thanks for checking in. We're busier than ever here at the clinic. It's a busy time of year—more and more people are wanting to get procedures done here instead of the hospital. I think we're going to have to put this off until next spring. Sorry to string you along. We usually slow down a bit in April and May. I'll reach out to you early next year.\"",
+			correctindex: "3",
             responses: [
-              {text: 'Wrong, too bad.'}, 
-              {text: 'Right!', correct: true}, 
+              {text: 'The sender does not want to work with the recipient.'},
+			  {text: 'The sender is upset that the recipient has delayed things.'},
+              {text: 'The sender is very busy due to health issues.'},
+			  {text: 'The sender wants to work with the recipient at a later  time.'}
             ]
           }, {
             text: "Question 2",
+			quote: "testing again",
+			correctindex: "0",
             responses: [
-              {text: 'Right answer', correct: true}, 
+              {text: 'Right answer'}, 
               {text: 'Wrong answer'}, 
+			  {text: 'Another wrong answer'}, 
+			  {text: 'Last wrong answer'} 
             ]
           } 
         ]
@@ -85,22 +96,27 @@
 	  data: {
 		quiz: quiz,
 		questionIndex: 0,
-		// An array initialized with "false" values for each question
-		// It means: "did the user answered correctly to the question n?" "no".
-		userResponses: Array(quiz.questions.length).fill(false)
+		userResponses: Array(quiz.questions.length)
 	  },
 	  // The view will trigger these methods on click
 	  methods: {
 		// Go to next question
 		next: function() {
-		  this.questionIndex++;
+			this.questionIndex++;
 		},
 		// Go to previous question
 		prev: function() {
-		  this.questionIndex--;
+			this.questionIndex--;
 		},
 		score: function() {
-		  return this.userResponses.filter(function(val) { return val }).length;
+			var array = [];
+			var correct = 0;
+			for (i = 0; i < this.userResponses.length; i++)
+			{
+				if(this.userResponses[i] == quiz.questions[i].correctindex)
+					correct++;
+			}
+			return correct;
 		}
 	  }
 	});
