@@ -5,7 +5,7 @@ body
 	width:100%;
 	margin:auto;
 }
-
+/*Quote style*/
 blockquote
 {
 	font-style:italic;
@@ -15,20 +15,29 @@ blockquote
 	line-height:1.4;
 }
 
+/*Prev/Next button style*/
 button
 {
-	background-color: #9dd0bb;
+	background-color: #769C8C;
 	color: #fff;
 	padding:15px 35px;
 	border:none;
 	border-radius:5px;
+	font-weight: bold;
 }
 
 button:hover
 {
 	background-color: #CEE8DD;
+	color: black;
 }
 
+button:hover .arrow
+{
+	border-color: black;
+}
+
+/*Create Next/Prev button  arrows*/
 .arrow {
   border: solid white;
   border-width: 0 3px 3px 0;
@@ -48,6 +57,8 @@ button:hover
   margin-right:5px;
 }
 
+		
+/*Moves next and prev buttons to right*/
 #buttonholder
 {
 	margin: auto 0 auto auto;
@@ -58,28 +69,22 @@ button:hover
 	cursor: pointer;
 }
 
-blockquote cite {
-	display: block;
-}
-
-blockquote cite:before {
-	content: "\2014 \2009";
-}
-
 .row
 {
 	display:flex;
 }
 
+/*Splits question/answer into 2 columns*/
 .column
 {
 	flex: 50%;
 	margin:50px;
 }
 
+/*Top bar style*/
 #barholder
 {
-	background-color:fff;
+	background-color:#fff;
 	margin-top:0px;
 	margin-bottom: 25px;
 }
@@ -88,21 +93,55 @@ blockquote cite:before {
 {
 	display:flex;
 }
+
+/*Main body style*/
 .content
 {
 	width:90%;
 	margin:auto;
-	background-color:fff;
+	background-color:#fff;
 	border-radius: 5px;
 }
 
-li
+/*Link style*/
+a
+{
+	text-decoration:none;
+}
+
+.refresh, a, a:visited
+{
+	color: #769C8C;
+}
+
+.refresh:hover, a:hover
+{
+	cursor:pointer;
+	color: #CEE8DD;
+}
+
+/*Set padding for homepage and result*/
+.singlecolumn
+{
+	padding:50px;
+}
+
+/*Answer style*/
+.column li
 {
 	list-style: none;
 	margin:40px 0px;
 }
 
-/* Customize the label (the container) */
+/*Test list style*/
+.singlecolumn li
+{
+	list-style: none;
+	margin:0px;
+	padding:0px;
+}
+
+/*Customize the label*/
 .radiotext {
 	display: block;
 	cursor: pointer;
@@ -113,16 +152,17 @@ li
 	appearance: button; -webkit-appearance: button; -moz-appearance: button; -ms-appearance: button;
 }
 
-li
-{
-	position: relative;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+/*Moves radio button to answer*/
+li	
+{	
+	position: relative;	
+	-webkit-user-select: none;	
+	-moz-user-select: none;	
+	-ms-user-select: none;	
+	user-select: none;	
 }
 
-/* Hide the browser's default radio button */
+/*Hide the browser's default radio button*/
 input {
   position: absolute;
   opacity: 0;
@@ -131,7 +171,7 @@ input {
   width: 0;
 }
 
-/* Create a custom radio button */
+/*Create a custom radio button*/
 .checkmark {
   position: absolute;
   top: 0;
@@ -144,21 +184,23 @@ input {
   border: 1px solid #eee;
 }
 
+/*When hovered, change background of answer*/
 .radiotext:hover {
   background-color: #CEE8DD;
 }
 
-/* When the radio button is checked, add a green background */
+/*When checked, add a green background to radio button*/
 input:checked ~ .checkmark {
-  background-color: #9dd0bb;
+  background-color: #769C8C;
   border: 1px solid #eee;
 }
-
+/*When checked, add greenbackground to answer*/
 input:checked ~ .radiotext {
-  background-color: #9dd0bb;
+  background-color: #769C8C;
+  color:#fff;
 }
 
-/* Create the indicator (the dot/circle - hidden when not checked) */
+/*Create the indicator (the dot/circle - hidden when not checked)*/
 .checkmark:after {
   content: "";
   position: absolute;
@@ -171,7 +213,7 @@ input:checked ~ .radiotext {
   background: white;
 }
 
-/* Show the indicator (dot/circle) when checked */
+/*Show the indicator (dot/circle) when checked*/
 input:checked ~ .checkmark:after {
   display: block;
 }

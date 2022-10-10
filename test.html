@@ -1,17 +1,19 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="styles.css">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
 	</head>
 	<body>
 		<div id="app">
 			<div id="barholder">
 			  <div class="content" id="testbar">
-					<h1>{{ quiz.title }}</h1>
+					<h1 v-if="test.questions.length > 1">{{ test.questions[0].name }}</h1>
 					<div id="buttonholder">
 						<!-- Prev is hidden on first question -->
-						<button v-show="questionIndex > 0" v-on:click="prev">
+						<button v-show="questionIndex > 0 && questionIndex < test.questions.length" v-on:click="prev">
 							<i class="arrow left"></i>Prev 
 						</button>
+                        <!-- Next is shown when an answer is selected-->
 						<button v-show="userResponses[questionIndex] != null" v-on:click="next">
 							Next<i class="arrow right"></i>
 						</button>
@@ -20,38 +22,35 @@
 			</div>
 			<div class="content">
 			  <!-- index is used to check with current question index -->
-			  <div v-for="(question, index) in quiz.questions">
+			  <div v-for="(question, index) in test.questions">
 				<!-- Hide all questions, show only the one with index === to current question index -->
-				<div class = "row" v-show="index === questionIndex">
+				<div class="row" v-show="index === questionIndex">
 					<div class="column">
-						<h2>{{ question.text }}</h2>
+						<h2>{{ question.question }}</h2>
 						<blockquote>{{ question.quote }}</blockquote>
 					</div>
 					<!-- for each response of the current question -->
 					<div class="column">
 					<h4>SELECT ONLY ONE</h4>
-						<li v-for="(response, optionindex) in question.responses">
+						<li v-for="(response, optionindex) in question.answers">
 						  <label>
 							<!-- The radio button has three new directives -->
-							<!-- v-bind:value sets "value" to "true" if the response is correct -->
+							<!-- v-bind:value sets "value" to the index of the answer
 							<!-- v-bind:name sets "name" to question index to group answers by question -->
 							<!-- v-model creates binding with userResponses -->
 							<input type="radio" v-bind:value="optionindex" v-bind:name="index" v-model="userResponses[index]">
-								   <div class="radiotext">{{response.text}}</div>
+								   <div class="radiotext">{{response}}</div>
 								   <span class="checkmark"></span>
 						  </label>
 						</li>
 					</div>
 				</div>
 			  </div>
-			  <!-- Last page, quiz is finished, display result -->
-			  <div class="column" v-show="questionIndex === quiz.questions.length">
-				<h2>
-				Quiz finished
-			  </h2>
-				<p>
-				  Total score: {{ score() }} / {{ quiz.questions.length }}
-				</p>
+			  <!-- Last page, test is finished, display result -->
+			  <div class="singlecolumn" v-show="questionIndex === test.questions.length">
+				<h2>Test complete</h2>
+				<p>{{ score() }}</p>
+				<p>You can <span class="refresh" v-on:click="refresh">take the test again</span> or <a href="index.html">return to the home page</a>.</p>
 			  </div>
 		  </div>
 		</div>
@@ -62,41 +61,24 @@
 	   <script>
     window.onload=function(){
       
-      // Create a quiz object with a title and two questions.
+      // Create a test object with a title and two questions.
       // A question has one or more answer, and one or more is valid.
-      var quiz = {
-        title: 'My quiz',
-        questions: [
-          {
-            text: "What is the main point of the message below?",
-			quote: "\"Thanks for checking in. We're busier than ever here at the clinic. It's a busy time of year—more and more people are wanting to get procedures done here instead of the hospital. I think we're going to have to put this off until next spring. Sorry to string you along. We usually slow down a bit in April and May. I'll reach out to you early next year.\"",
-			correctindex: "3",
-            responses: [
-              {text: 'The sender does not want to work with the recipient.'},
-			  {text: 'The sender is upset that the recipient has delayed things.'},
-              {text: 'The sender is very busy due to health issues.'},
-			  {text: 'The sender wants to work with the recipient at a later  time.'}
-            ]
-          }, {
-            text: "Question 2",
-			quote: "testing again",
-			correctindex: "0",
-            responses: [
-              {text: 'Right answer'}, 
-              {text: 'Wrong answer'}, 
-			  {text: 'Another wrong answer'}, 
-			  {text: 'Last wrong answer'} 
-            ]
-          } 
-        ]
+      var test = {
+          questions: []
       };
       
       new Vue({
 	  el: '#app',
 	  data: {
-		quiz: quiz,
+		test: test,
 		questionIndex: 0,
-		userResponses: Array(quiz.questions.length)
+		userResponses: Array(test.questions.length)
+	  },
+      //Gets test title, questions and answers
+	  created: function()
+	  {
+          var url = "gettest.php?id=" + new URLSearchParams(window.location.search).get('id');
+          fetch(url).then(response => response.json()).then(responseJSON => { this.test.questions = responseJSON; });
 	  },
 	  // The view will trigger these methods on click
 	  methods: {
@@ -108,15 +90,25 @@
 		prev: function() {
 			this.questionIndex--;
 		},
+        // Calculates and displays score
 		score: function() {
 			var array = [];
 			var correct = 0;
 			for (i = 0; i < this.userResponses.length; i++)
 			{
-				if(this.userResponses[i] == quiz.questions[i].correctindex)
+				if(this.userResponses[i] == test.questions[i].correctindex)
 					correct++;
 			}
-			return correct;
+			if(correct  > test.questions.length / 2)
+				return "Congratulations, you scored " + correct + "/" + test.questions.length + "!";
+			else
+				return "Unfortunately, you only scored " + correct + "/" + test.questions.length + ".";
+		},
+        // Refreshes test
+		refresh: function() {
+		for (i = 0; i < this.userResponses.length; i++)
+			this.userResponses[i] = null;
+			this.questionIndex = 0;
 		}
 	  }
 	});

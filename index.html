@@ -1,37 +1,34 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="styles.css">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
 	</head>
 	<body>	
 		<div id="app">
-		  <!-- Quiz title -->
-		  <h1>{{ tests.title }}</h1>
-		  <!-- Questions: display a div for each question -->
-			<!-- Responses: display a li for each possible response with a radio button -->
-			<ol>
-			  <li v-for="test in tests.tests">
-			  <a v-bind:href="test.text">{{ test.title }}</a>
-			  </li>
-			</ol>
+			<div id="barholder">
+			  <div class="content" id="testbar">
+					<h1>{{ tests.title }}</h1>
+				</div>
+			</div>
+			<div class="content">
+				<div class="singlecolumn">
+                    <!-- Show links to all of the tests-->
+					<h2>Welcome, we have {{ tests.tests.length }} tests to choose from:</h2>
+					<li v-for="test in tests.tests">
+					<a v-bind:href="'test.html?id=' + test.id"><h3>{{ test.name }}</h3></a>
+					</li>
+				</div>
+			</div>
 		</div>
 	  <!-- Load Vue script -->
-	  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+	  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 	  <!-- On load, init Vue -->
 	   <script>
     window.onload=function(){
       
       var tests = {
-        title: 'My tests',
-        tests: [
-          {
-            title: "Test 1",
-			text: 'test1.html'
-          }, {
-            title: "Test 2",
-			text: 'test2.html'
-          }
-        ]
+        title: 'Caleb Belrose Test Taking',
+        tests: []
       };
       
       new Vue({
@@ -39,6 +36,10 @@
 	  data: {
 		tests: tests
 	  },
+      //Get test data from database
+	  created: function(){
+	  fetch("tests.php").then(response => response.json()).then(responseJSON => { this.tests.tests = responseJSON; });
+	  }
 	});
     }
   </script>
