@@ -1,0 +1,180 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="styles.css">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+	</head>
+	<body>
+		<div id="app">
+            <div v-if="!submitted" id="barholder">
+                <!-- Go to home page -->
+                <button id="home" v-on:click="gohome">
+                    <h1><i class="arrow left"></i></h1>
+                </button>
+                <div class="content" id="testbar">
+                    <label for="title"><h1>Title</h1></label>
+                    <input type="text" id="title" v-model="title">
+                    <div class="buttonholder">
+                        <!-- Prev is hidden if something needs to be filled out and on the first question -->
+                        <button v-show="cancontinue() && questionIndex > 0" v-on:click="prev">
+                            <i class="arrow left"></i>Prev 
+                        </button>
+                        <!-- Next is hidden if something needs to be filled out-->
+                        <button v-show="cancontinue()" v-on:click="next">
+                            Next<i class="arrow right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+            <!-- index is used to check with current question index -->
+                <div v-if="!submitted" v-for="(question, index) in questions">
+                    <!-- Hide all questions except the one with index === current question index -->
+                    <div class="row" v-show="index === questionIndex">
+                        <div class="column">
+                            <div id="create">
+                                <!-- Set the current questions question and quote -->
+                                <label for="question"><h4>Question</h4></label><input type="text" v-model="question.question" id="question">
+                                <label for="quote"><h4>Quote</h4></label><textarea id="quote" v-model="question.quote"></textarea>
+                            </div>
+                        </div>
+                        <!-- for each response of the current question -->
+                        <div class="column">
+                            <h4>Answers - please select the correct one</h4>
+                            <li v-for="(response, optionindex) in question.answers">
+                                <label>
+                                    <!-- Set the current question's answer -->
+                                    <input class="answer" type="radio" v-bind:name="index" v-on:click="hasanswer(optionindex)">
+                                    <div class="radiotext"><input type="text" v-model="response.answer"></div>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+                <div class="error">
+                        {{ error }}
+                </div>
+                <div class="testbar">
+                    <div class="buttonholder" v-if="!submitted">
+                        <button v-on:click="addanswer">
+                            Add Answer
+                        </button>
+                        <!-- Hidden if there's only 2 answers -->
+                        <button v-show="questions[questionIndex].answers.length > 2" v-on:click="removeanswer">
+                            Remove Answer
+                        </button>
+                        <!-- Hidden on the first question -->
+                        <button v-show="questionIndex > 0" v-on:click="removequestion">
+                            Remove Question
+                        </button>
+                        <!-- Hidden if something needs to be filled out -->
+                        <button v-show="cancontinue()" type="submit" v-on:click="submit">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            <!-- Last page, test is finished, display result -->
+                <div class="singlecolumn" v-show="submitted">
+                    <h2>Test submitted</h2>
+                    <p>You can <span class="refresh" v-on:click="refresh">create another test</span> or <a href="index.html">return to the home page</a>.</p>
+                </div>
+            </div>
+		</div>
+	    <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios@1.1.3/dist/axios.min.js"></script>
+	    <!-- On load, init Vue -->
+	    <script>
+            window.onload=function(){
+                new Vue({
+                el: '#app',
+                data: { 
+                    questionIndex: 0,
+                    questions: [{question: "", quote: "", answers:[{answer:"",correct:0}, {answer:"", correct:0}]}],
+                    submitted:false,
+                    error: "",
+                    title: "",
+                    correctIndex: -1
+                },
+                methods: {
+                    // Go to next question
+                    next: function() {
+                        if(++this.questionIndex == this.questions.length){
+                            this.questions.push({question: "", quote: "", answers:[{answer:"",correct:0}, {answer:"", correct:0}]});
+                            this.correctIndex = -1;
+                        }
+                    },
+                    // Go to previous question
+                    prev: function() {
+                        this.questionIndex--;
+                    },
+                    // Add answer to question
+                    addanswer: function() {
+                        if(this.questions[this.questionIndex].answers.length < 10)
+                            this.questions[this.questionIndex].answers.push({answer:"",correct:0});
+                    },
+                    // Remove answer from question
+                    removeanswer: function() {
+                        if(this.questions[this.questionIndex].answers.length > 2)
+                            this.questions[this.questionIndex].answers.pop();
+                    },
+                    // Remove question
+                    removequestion: function() {
+                        if(this.questionIndex < this.questions.length)
+                            this.questions.splice(this.questionIndex, 1);
+                        this.questionIndex--;
+                    },
+                    // Submits test, adding it to website
+                    submit: function() {
+                        if(this.title != "")
+                        {
+                            this.error = "OK";
+                            axios.post("/addtest.php", {questions:this.questions, title:this.title}).then(function (response) {
+                                this.submitted = true;
+                                this.error = response;
+                                console.log(response);
+                            }).catch(function (error) {
+                                this.error = error;
+                                console.log(error);
+                            });
+                        }
+                        else
+                            this.error = "Please enter a title.";
+                    },
+                    // Gives the current question a correct answer
+                    hasanswer: function(index) {
+                        if(this.correctIndex > -1)
+                            this.questions[this.questionIndex].answers[this.correctIndex].correct = 0;
+                        this.questions[this.questionIndex].answers[index].correct = 1;
+                        this.correctIndex = index;
+                    },
+                    // Whether something needs to be filled out (title, current question/quote or answers with correct option)
+                    cancontinue: function() {
+                        if(this.correctIndex > -1 && this.title != "" && this.questions[this.questionIndex].question != "" && this.questions[this.questionIndex].quote != "")
+                        {
+                            for(let i = 0; i < this.questions[this.questionIndex].answers.length; i++)
+                            {
+                                if(this.questions[this.questionIndex].answers[i].answer == "")
+                                    return false;
+                            }
+                            return true;
+                        }
+                        else
+                            return false;
+                    },
+                    // Refreshes test
+                    refresh: function() {
+                        this.questionIndex = 0;
+                        this.questions = [2];
+                        this.submitted = false;
+                        this.error = "";
+                    },
+                    gohome: function() {
+                        window.location.href = '/index.html';
+                    }
+                }
+                });
+            }
+        </script>
+	</body>
+</html>

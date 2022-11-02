@@ -1,13 +1,11 @@
-body
-{
+body{
 	background-color:#eee;
 	font-family:Arial;
 	width:100%;
 	margin:auto;
 }
 /*Quote style*/
-blockquote
-{
+blockquote{
 	font-style:italic;
 	padding:10px 25px;
 	margin:0px;
@@ -15,9 +13,13 @@ blockquote
 	line-height:1.4;
 }
 
-/*Prev/Next button style*/
-button
-{
+.error{
+    text-align: right;
+    color: #FF0000;
+}
+
+/*Button style*/
+button{
 	background-color: #769C8C;
 	color: #fff;
 	padding:15px 35px;
@@ -26,14 +28,12 @@ button
 	font-weight: bold;
 }
 
-button:hover
-{
+button:hover{
 	background-color: #CEE8DD;
 	color: black;
 }
 
-button:hover .arrow
-{
+button:hover .arrow{
 	border-color: black;
 }
 
@@ -43,6 +43,19 @@ button:hover .arrow
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
+}
+
+/* Home button */
+#home{
+    position: absolute;
+    padding: 5px 20px;
+    top: 10px;
+    left: 10px;
+}
+
+#home .arrow{
+    border-width: 0 auto auto 0;
+    padding: auto;
 }
 
 .right {
@@ -59,44 +72,37 @@ button:hover .arrow
 
 		
 /*Moves next and prev buttons to right*/
-#buttonholder
-{
+.buttonholder{
 	margin: auto 0 auto auto;
 }
 
-button:hover
-{
+button:hover{
 	cursor: pointer;
 }
 
-.row
-{
+.row{
 	display:flex;
 }
 
 /*Splits question/answer into 2 columns*/
-.column
-{
+.column{
 	flex: 50%;
 	margin:50px;
 }
 
 /*Top bar style*/
-#barholder
-{
+#barholder{
 	background-color:#fff;
 	margin-top:0px;
 	margin-bottom: 25px;
 }
 
-#testbar
-{
+.testbar, #testbar{
 	display:flex;
 }
 
 /*Main body style*/
-.content
-{
+.content{
 	width:90%;
 	margin:auto;
 	background-color:#fff;
@@ -104,38 +110,32 @@ button:hover
 }
 
 /*Link style*/
-a
-{
+a{
 	text-decoration:none;
 }
 
-.refresh, a, a:visited
-{
+.refresh, a, a:visited{
 	color: #769C8C;
 }
 
-.refresh:hover, a:hover
-{
+.refresh:hover, a:hover{
 	cursor:pointer;
 	color: #CEE8DD;
 }
 
 /*Set padding for homepage and result*/
-.singlecolumn
-{
+.singlecolumn{
 	padding:50px;
 }
 
 /*Answer style*/
-.column li
-{
+.column li{
 	list-style: none;
 	margin:40px 0px;
 }
 
 /*Test list style*/
-.singlecolumn li
-{
+.singlecolumn li{
 	list-style: none;
 	margin:0px;
 	padding:0px;
@@ -153,17 +153,32 @@ a
 }
 
 /*Moves radio button to answer*/
-li	
-{	
+li{
 	position: relative;	
 	-webkit-user-select: none;	
 	-moz-user-select: none;	
 	-ms-user-select: none;	
 	user-select: none;	
 }
+/*Fit input to parent*/
+#create label, #create input, #create textarea , .radiotext input {
+    width: 100%;
+}
+textarea {
+    font-family:Arial;
+}
+#title {
+    display:flex;
+    flex:1;
+    margin:auto;
+    padding:1em;
+}
+#create textarea {
+    resize:vertical;
+}
 
 /*Hide the browser's default radio button*/
-input {
+input.answer {
   position: absolute;
   opacity: 0;
   cursor: pointer;

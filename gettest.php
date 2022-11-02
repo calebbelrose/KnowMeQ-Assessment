@@ -3,20 +3,39 @@
     {
         //Connect to database
         require 'database.php';
+        $result = $mysqli_conection->query("SELECT t.name, q.question, q.quote, a.answer, a.correct FROM questions q JOIN answers a ON a.questionid = q.id JOIN tests t on q.testid = t.id WHERE q.testid = " . $_GET['id'] . " ORDER BY q.id");
+
         $returnData = array();
 
         //Get test questions and answers
-        $result = $mysqli_conection->query("SELECT t.name AS name, q.question AS question, q.quote AS quote, q.answer0 AS answer0, q.answer1 AS answer1, q.answer2 AS answer2, q.answer3 AS answer3, q.correctindex AS correctindex FROM                tests t, questions q WHERE t.id = q.testid AND t.id = " . $_GET['id']);
-
-        //Bind questions and answers to return array
-        while ($row = $result->fetch_assoc())
+        $result = $mysqli_conection->query("SELECT t.name, q.question, q.quote, a.answer, a.correct FROM questions q JOIN answers a ON a.questionid = q.id JOIN tests t on q.testid = t.id WHERE q.testid = " . $_GET['id'] . " ORDER BY q.id");
+        
+        if($row = $result->fetch_assoc())
         {
             $temp = array(
-                "name" => $row["name"],
+            "name" => $row["name"],
             "question" => $row["question"],
             "quote" => $row["quote"],
-            "correctindex" => $row["correctindex"],
-            "answers" => array($row["answer0"],$row["answer1"],$row["answer2"],$row["answer3"]));
+            "answers" => array(array($row["answer"], $row["correct"])));
+
+            //Bind questions and answers to return array
+            while ($row = $result->fetch_assoc())
+            {
+                if($row["question"] == $temp["question"])
+                {
+                    array_push($temp["answers"], array($row["answer"], $row["correct"]));
+                }
+                else
+                {
+                    $returnData[] = $temp;
+                    $temp = array(
+                    "name" => $row["name"],
+                    "question" => $row["question"],
+                    "quote" => $row["quote"],
+                    "answers" => array(array($row["answer"], $row["correct"])));
+                }
+            }
+
             $returnData[] = $temp;
         }
 
